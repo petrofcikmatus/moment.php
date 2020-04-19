@@ -27,8 +27,21 @@ $ifCountSmaller = function ($count, $countSmallerThan, $trueString, $falseString
     return $count < $countSmallerThan ? $trueString : $falseString;
 };
 
+/**
+ * @param int    $count
+ * @param int    $countSmallerThan
+ * @param string $trueString
+ * @param string $falseString
+ *
+ * @return string
+ */
+$ifFeminineGender = function ($count, $countSmallerThan, $trueString, $falseString)
+{
+    return $count < $countSmallerThan ? $trueString : $falseString;
+};
+
 return array(
-    "months"        => explode('_', 'januára_februára_marca_apríla_mája_júna_júla_augusta_septembra_októbra_novembra_decembra'),
+    "months"        => explode('_', 'január_február_marec_apríl_máj_jún_júl_august_september_október_november_december'),
     "monthsShort"   => explode('_', 'Jan_Feb_Mar_Apr_Máj_Jún_Júl_Aug_Sep_Okt_Nov_Dec'),
     "weekdays"      => explode('_', 'pondelok_utorok_streda_štvrtok_piatok_sobota_nedeľa'),
     "weekdaysShort" => explode('_', 'po_ut_st_št_pi_so_ne'),
@@ -36,59 +49,69 @@ return array(
         "sameDay"  => '[dnes]',
         "nextDay"  => '[zajtra]',
         "lastDay"  => '[včera]',
-        "lastWeek" => '[minulý] l',
+        "lastWeek" => function ($count, $direction, Moment $moment) {
+            switch ($moment->getDay()) {
+                case 1:
+                case 2:
+                case 4:
+                case 5:
+                    return '[minulý] l';
+                default:
+                    return '[minulá] l';
+            }
+        },
         "sameElse" => 'l',
         "withTime" => '[v] H:i',
         "default"  => 'd.m.Y',
     ),
     "relativeTime"  => array(
-        "future" => 'za %s',
+        "future" => 'o %s',
         "past"   => 'pred %s',
-        "s"      => function ($count, $direction, Moment $m) use ($ifPast)
+        "s"      => function ($count, $direction, Moment $moment) use ($ifPast)
         {
             return $ifPast($direction, 'okamihom', 'okamih');
         },
-        "ss"      => function ($count, $direction, Moment $m) use ($ifPast)
+        "ss"      => function ($count, $direction, Moment $moment) use ($ifPast)
         {
             return $ifPast($direction, 'okamihom', 'okamih');
         },
-        "m"      => function ($count, $direction, Moment $m) use ($ifPast)
+        "m"      => function ($count, $direction, Moment $moment) use ($ifPast)
         {
             return $ifPast($direction, 'minútou', 'minútu');
         },
-        "mm"     => function ($count, $direction, Moment $m) use ($ifPast, $ifCountSmaller)
+        "mm"     => function ($count, $direction, Moment $moment) use ($ifPast, $ifCountSmaller)
         {
             return $ifPast($direction, '%d minútami', $ifCountSmaller($count, 5, '%d minúty', '%d minút'));
         },
-        "h"      => function ($count, $direction, Moment $m) use ($ifPast, $ifCountSmaller)
+        "h"      => function ($count, $direction, Moment $moment) use ($ifPast, $ifCountSmaller)
         {
             return $ifPast($direction, 'hodinou', 'hodinu');
         },
-        "hh"     => function ($count, $direction, Moment $m) use ($ifPast, $ifCountSmaller)
+        "hh"     => function ($count, $direction, Moment $moment) use ($ifPast, $ifCountSmaller)
         {
             return $ifPast($direction, '%d hodinami', $ifCountSmaller($count, 5, '%d hodiny', '%d hodín'));
         },
-        "d"      => function ($count, $direction, Moment $m) use ($ifPast)
+        "d"      => function ($count, $direction, Moment $moment) use ($ifPast)
         {
             return $ifPast($direction, 'dňom', 'deň');
         },
-        "dd"     => function ($count, $direction, Moment $m) use ($ifPast, $ifCountSmaller)
+        "dd"     => function ($count, $direction, Moment $moment) use ($ifPast, $ifCountSmaller)
         {
             return $ifPast($direction, '%d dňami', $ifCountSmaller($count, 5, '%d dni', '%d dní'));
         },
-        "M"      => function ($count, $direction, Moment $m) use ($ifPast)
+        "M"      => function ($count, $direction, Moment $moment) use ($ifPast)
         {
             return $ifPast($direction, 'mesiacom', 'mesiac');
         },
-        "MM"     => function ($count, $direction, Moment $m) use ($ifPast, $ifCountSmaller)
+        "MM"     => function ($count, $direction, Moment $moment) use ($ifPast, $ifCountSmaller)
         {
             return $ifPast($direction, '%d mesiacmi', $ifCountSmaller($count, 5, '%d mesiace', '%d mesiacov'));
         },
-        "y"      => function ($count, $direction, Moment $m) use ($ifPast)
+        "y"      => function ($count, $direction, Moment $moment) use ($ifPast)
         {
             return $ifPast($direction, 'rokom', 'rok');
         },
-        "yy"     => function ($count, $direction, Moment $m) use ($ifPast, $ifCountSmaller)
+        "yy"     => function ($count, $direction, Moment $moment) use ($ifPast, $ifCountSmaller)
         {
             return $ifPast($direction, '%d rokmi', $ifCountSmaller($count, 5, '%d roky', '%d rokov'));
         },
